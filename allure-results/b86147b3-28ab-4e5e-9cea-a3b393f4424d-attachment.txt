@@ -1,0 +1,20 @@
+Initial request results:
+/test: REFRESH
+/non-cached: REFRESH
+/image.jpg: REFRESH
+/script.js: REFRESH
+/style.css: REFRESH
+/api/data: REFRESH
+
+Second request results:
+/test: HIT
+/non-cached: HIT
+/image.jpg: HIT
+/script.js: HIT
+/style.css: HIT
+/api/data: HIT
+GET request cache status: HIT
+POST request cache status: BYPASS
+PUT request cache status: BYPASS
+DELETE request cache status: BYPASS
+HEAD request cache status: REFRESH

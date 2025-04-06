@@ -1,0 +1,15 @@
+Initial request results:
+/test: HIT
+/non-cached: REFRESH
+/image.jpg: REFRESH
+/script.js: HIT
+/style.css: HIT
+/api/data: REFRESH
+
+Second request results:
+/test: HIT
+/non-cached: HIT
+/image.jpg: HIT
+/script.js: HIT
+/style.css: HIT
+/api/data: HIT

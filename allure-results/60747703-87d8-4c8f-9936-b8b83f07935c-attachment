@@ -1,0 +1,157 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Comprehensive Cache Strategy Validation >> Configure cache strategy and validate x-cache-status
+- Location: C:\Users\naqas\OneDrive\ドキュメント\PlayWright\e2e\Flows\withOutCachee.spec.js:30:9
+
+# Error details
+
+```
+Error: page.goto: Target page, context or browser has been closed
+Call log:
+  - navigating to "https://console.asians.group/#/domain/list", waiting until "load"
+
+    at C:\Users\naqas\OneDrive\ドキュメント\PlayWright\e2e\Flows\withOutCachee.spec.js:33:24
+    at C:\Users\naqas\OneDrive\ドキュメント\PlayWright\e2e\Flows\withOutCachee.spec.js:32:20
+```
+
+# Test source
+
+```ts
+   1 | import { test, expect } from '@playwright/test';
+   2 |
+   3 | test.describe('Comprehensive Cache Strategy Validation', () => {
+   4 |     const domain = 'test-3.cwcdn.com';
+   5 |     const testPaths = [
+   6 |         '/test',          // Configured cached path
+   7 |         '/non-cached',    // Not configured for caching
+   8 |         '/image.jpg',     // Static image
+   9 |         '/script.js',     // Static JS
+   10 |         '/style.css',     // Static CSS
+   11 |         '/api/data'       // API endpoint
+   12 |     ];
+   13 |     let page;
+   14 |
+   15 |     test.beforeAll(async ({ browser }) => {
+   16 |         page = await browser.newPage();
+   17 |         
+   18 |         // Login sequence
+   19 |         await page.goto('https://user.asians.group/auth/realms/asians/protocol/openid-connect/auth?client_id=public&redirect_uri=https%3A%2F%2Fconsole.asians.group%2F%23%2F&state=625a8e65-456b-414a-8fa1-0db99c3dcbe3&response_mode=fragment&response_type=code&scope=openid&nonce=c0e2d0c0-4788-4f4f-8007-220821189d7a');
+   20 |         await page.getByRole('textbox', { name: 'Email' }).fill('qa.assessment@asians.cloud');
+   21 |         await page.getByRole('textbox', { name: 'Password' }).fill('qaengineer123');
+   22 |         await page.getByRole('button', { name: 'Sign In' }).click();
+   23 |         await page.waitForTimeout(25000);
+   24 |     });
+   25 |
+   26 |     test.afterAll(async () => {
+   27 |         await page.close();
+   28 |     });
+   29 |
+   30 |     test('Configure cache strategy and validate x-cache-status', async ({ request }) => {
+   31 |         // Configure cache strategy in UI
+   32 |         await test.step('Configure cache strategy in console', async () => {
+>  33 |             await page.goto('https://console.asians.group/#/domain/list');
+      |                        ^ Error: page.goto: Target page, context or browser has been closed
+   34 |             await page.getByRole('button', { name: 'Edit' }).nth(1).click();
+   35 |             await page.getByRole('tab', { name: 'Advanced configuration' }).click();
+   36 |             await page.getByText('Cache strategy').click();
+   37 |             await page.getByText('Add new cache path').click();
+   38 |             await page.getByRole('textbox', { name: '/path, /test' }).fill('test');
+   39 |             await page.getByRole('button', { name: 'icon: plus Add' }).click();
+   40 |             await page.getByRole('switch', { name: 'icon: close' }).click();
+   41 |             await page.getByRole('button', { name: 'icon: save Save' }).click();
+   42 |             await page.waitForTimeout(5000);
+   43 |         });
+   44 |
+   45 |         // Test all endpoints
+   46 |         await test.step('Verify x-cache-status for all endpoints', async () => {
+   47 |             // First pass - initial requests
+   48 |             const initialResults = await Promise.all(
+   49 |                 testPaths.map(async (path) => {
+   50 |                     const response = await request.get(`https://${domain}${path}`);
+   51 |                     return {
+   52 |                         path,
+   53 |                         status: response.status(),
+   54 |                         cacheStatus: response.headers()['x-cache-status']
+   55 |                     };
+   56 |                 })
+   57 |             );
+   58 |
+   59 |             console.log('Initial request results:');
+   60 |             initialResults.forEach(result => {
+   61 |                 console.log(`${result.path}: ${result.cacheStatus}`);
+   62 |                 if (result.path === '/test') {
+   63 |                     expect(['MISS',"REFRESH"]).toContain(result.cacheStatus);
+   64 |                 }
+   65 |             });
+   66 |
+   67 |             // Second pass - repeat requests
+   68 |             const secondResults = await Promise.all(
+   69 |                 testPaths.map(async (path) => {
+   70 |                     const response = await request.get(`https://${domain}${path}`);
+   71 |                     return {
+   72 |                         path,
+   73 |                         status: response.status(),
+   74 |                         cacheStatus: response.headers()['x-cache-status']
+   75 |                     };
+   76 |                 })
+   77 |             );
+   78 |
+   79 |             console.log('\nSecond request results:');
+   80 |             secondResults.forEach(result => {
+   81 |                 console.log(`${result.path}: ${result.cacheStatus}`);
+   82 |                 if (result.path === '/test') {
+   83 |                     expect(result.cacheStatus).toBe('HIT');
+   84 |                 }
+   85 |                 if (result.path === '/non-cached' || result.path === '/api/data') {
+   86 |                     expect(['MISS', 'BYPASS']).toContain(result.cacheStatus);
+   87 |                 }
+   88 |             });
+   89 |         });
+   90 |
+   91 |         // Additional test cases
+   92 |         await test.step('Verify different HTTP methods', async () => {
+   93 |             const methods = ['GET', 'POST', 'PUT', 'DELETE', 'HEAD'];
+   94 |             
+   95 |             for (const method of methods) {
+   96 |                 const response = await request.fetch(`https://${domain}/test`, {
+   97 |                     method: method
+   98 |                 });
+   99 |                 console.log(`${method} request cache status: ${response.headers()['x-cache-status']}`);
+  100 |                 
+  101 |                 if (method === 'GET' || method === 'HEAD') {
+  102 |                     expect(['HIT', 'MISS']).toContain(response.headers()['x-cache-status']);
+  103 |                 } else {
+  104 |                     expect(['BYPASS', 'MISS']).toContain(response.headers()['x-cache-status']);
+  105 |                 }
+  106 |             }
+  107 |         });
+  108 |
+  109 |         await test.step('Verify cache TTL behavior', async () => {
+  110 |             const firstResponse = await request.get(`https://${domain}/test`);
+  111 |             expect(firstResponse.headers()['x-cache-status']).toBe('MISS');
+  112 |             
+  113 |             const secondResponse = await request.get(`https://${domain}/test`);
+  114 |             expect(secondResponse.headers()['x-cache-status']).toBe('HIT');
+  115 |             
+  116 |             await new Promise(resolve => setTimeout(resolve, 61000)); // 61 seconds
+  117 |             
+  118 |             const thirdResponse = await request.get(`https://${domain}/test`);
+  119 |             expect(thirdResponse.headers()['x-cache-status']).toBe('MISS');
+  120 |         });
+  121 |
+  122 |         await test.step('Verify cache purge', async () => {
+  123 |             // Implementation would go here if purge API is available
+  124 |             // await request.post(`https://api.console.asians.group/purge/${domain}`);
+  125 |             
+  126 |             const postPurgeResponse = await request.get(`https://${domain}/test`);
+  127 |             expect(postPurgeResponse.headers()['x-cache-status']).toBe('MISS');
+  128 |         });
+  129 |     });
+  130 | });
+```

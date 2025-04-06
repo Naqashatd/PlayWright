@@ -1,0 +1,15 @@
+Initial request results:
+/test: undefined
+/non-cached: undefined
+/image.jpg: undefined
+/script.js: undefined
+/style.css: undefined
+/api/data: undefined
+
+Second request results:
+/test: HIT
+/non-cached: REFRESH
+/image.jpg: REFRESH
+/script.js: MISS
+/style.css: MISS
+/api/data: REFRESH

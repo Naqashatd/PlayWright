@@ -1,0 +1,78 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Enter First Name
+- Location: C:\Users\naqas\OneDrive\ドキュメント\PlayWright\e2e\example.spec.js:22:1
+
+# Error details
+
+```
+Error: locator.fill: Target page, context or browser has been closed
+Call log:
+  - waiting for locator('input[placeholder=\'First Name\']')
+
+    at C:\Users\naqas\OneDrive\ドキュメント\PlayWright\e2e\example.spec.js:23:57
+```
+
+# Test source
+
+```ts
+   1 | // @ts-check
+   2 | const { test, expect } = require('@playwright/test');
+   3 |
+   4 | test('homepage has Playwright in title and get started link linking to the intro page', async ({ page }) => {
+   5 |   await page.goto('https://console.asians.group/');
+   6 |
+   7 |   // Expect a title "to contain" a substring.
+   8 |  // await expect(page).toHaveTitle(/Playwright/);
+   9 |
+  10 |   // // create a locator
+  11 |   // const getStarted = page.locator('text=Get Started');
+  12 |
+  13 |   // // Expect an attribute "to be strictly equal" to the value.
+  14 |   // await expect(getStarted).toHaveAttribute('href', '/docs/intro');
+  15 |
+  16 |   // // Click the get started link.
+  17 |   // await getStarted.click();
+  18 |   
+  19 |   // // Expects the URL to contain intro.
+  20 |   // await expect(page).toHaveURL(/.*intro/);
+  21 | });
+  22 | test('Enter First Name',async ({ page })=>{
+> 23 |   await page.locator("input[placeholder='First Name']").fill('QA')
+     |                                                         ^ Error: locator.fill: Target page, context or browser has been closed
+  24 | })
+  25 | test('Enter Last Name',async ({ page })=>{
+  26 |   await page.locator("input[placeholder='Last Name']").fill('Test')
+  27 | })
+  28 | test('Select Gender as Male',async ({ page })=>{
+  29 |     await page.locator('#inlineRadioMale').check()
+  30 | })
+  31 | test('Select Department as Departmenr of Engineering',async ({ page })=>{
+  32 |   await page.selectOption("select[name='department']",'Department of Engineering')
+  33 | })
+  34 | test('Enter Username',async ({ page })=>{
+  35 |   await page.locator("input[placeholder='Username']").fill('QaTest568')
+  36 | })
+  37 | test('Enter Password',async ({ page })=>{
+  38 |   await page.locator("input[placeholder='Password']").fill('Password1')
+  39 | })
+  40 | test('ReEnter in Confirm Password',async ({ page })=>{
+  41 |     await page.locator("input[placeholder='Confirm Password']").fill('Password1')
+  42 | })
+  43 | test('Enter Email',async ({ page })=>{
+  44 |     await page.locator("input[placeholder='E-Mail Address']").fill('TestQa@email.com')
+  45 | })
+  46 | test('Enter Phone Number',async ({ page })=>{
+  47 |     await page.locator("input[placeholder='(639)']").fill('‎13324558954')
+  48 | })
+  49 | test('Enter Additional Information',async ({ page })=>{
+  50 |     await page.locator("#exampleFormControlTextarea1").fill('Just for testing Purpose')
+  51 | })
+  52 |
+```

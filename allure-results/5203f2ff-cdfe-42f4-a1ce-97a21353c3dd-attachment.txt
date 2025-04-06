@@ -1,0 +1,7 @@
+Initial request results:
+/test: HIT
+/non-cached: MISS
+/image.jpg: REFRESH
+/script.js: HIT
+/style.css: HIT
+/api/data: MISS

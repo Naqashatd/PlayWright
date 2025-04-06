@@ -1,0 +1,213 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Cache Strategy Tests >> cache strategy turn off
+- Location: C:\Users\naqas\OneDrive\ドキュメント\PlayWright\e2e\cacheStrategyTests.spec.js:112:7
+
+# Error details
+
+```
+Error: expect(received).not.toHaveProperty(path)
+
+Matcher error: received value must not be null nor undefined
+
+Received has value: undefined
+    at forEach (C:\Users\naqas\OneDrive\ドキュメント\PlayWright\e2e\cacheStrategyTests.spec.js:128:45)
+    at C:\Users\naqas\OneDrive\ドキュメント\PlayWright\e2e\cacheStrategyTests.spec.js:126:20
+```
+
+# Test source
+
+```ts
+   28 |     test.afterAll(async () => {
+   29 |         await page.close();
+   30 |     });
+   31 |
+   32 |     // test('Bypass All Cookie configuration', async ({ request }) => {
+   33 |     //     await domainSettingsPage.navigateToDomainList();
+   34 |     //     await domainSettingsPage.configureBypassAllCookie();
+   35 |
+   36 |     //     await domainSettingsPage.navigateToDomain();
+   37 |     //     // Test domain
+   38 |     //     const testPath = '/test';
+   39 |
+   40 |     //     // Make initial request and check for MISS
+   41 |     //     const response1 = await request.get(`https://${domain}${testPath}`);
+   42 |     //     const xCacheStatus1 = response1.headers()['x-cache-status'];
+   43 |     //    // in actual it should have first one
+   44 |     //    // expect(xCacheStatus1).toBe('MISS');
+   45 |     //    expect(['BYPASS']).toContain(xCacheStatus1);
+   46 |
+   47 |     //    await domainSettingsPage.navigateToDomain();
+   48 |     //     // Make second request and check for ByPass
+   49 |     //     await page.waitForTimeout(5000);
+   50 |     //     const response2 = await request.get(`https://${domain}${testPath}`);
+   51 |     //     const xCacheStatus2 = response2.headers()['x-cache-status'];
+   52 |     //     expect(xCacheStatus2).toBe('BYPASS');
+   53 |     //   //expect(['MISS', 'BYPASS','REFRESH','HIT']).toContain(xCacheStatus1);
+   54 |
+   55 |     //   await domainSettingsPage.navigateToDomain();
+   56 |     //     // Test with different path that should be cached
+   57 |     //     const cachedPath = '/non-cached-path';
+   58 |     //     const response3 = await request.get(`https://${domain}${cachedPath}`);
+   59 |     //     const xCacheStatus3 = response3.headers()['x-cache-status'];
+   60 |     //     expect.soft(xCacheStatus3).toBe('BYPASS');
+   61 |     // });
+   62 |
+   63 |     // test('Cache FullSite configuration', async ({ request }) => {
+   64 |     //     await domainSettingsPage.navigateToDomainList();
+   65 |     //     await domainSettingsPage.configureCacheFullSite();
+   66 |     //     // Test domain
+   67 |     //     const testPath = '/test';
+   68 |
+   69 |     //     // Make initial request and check for MISS
+   70 |     //     const response1 = await request.get(`https://${domain}${testPath}`);
+   71 |     //     const xCacheStatus1 = response1.headers()['x-cache-status'];
+   72 |     //     expect.soft(['MISS']).toContain(xCacheStatus1);
+   73 |
+   74 |     //     //await domainSettingsPage.navigateToDomain();
+   75 |     //     // Make second request and check for HIT
+   76 |     //     const response2 = await request.get(`https://${domain}${testPath}`);
+   77 |     //     const xCacheStatus2 = response2.headers()['x-cache-status'];
+   78 |     //     expect.soft(xCacheStatus2).toBe('HIT');
+   79 |
+   80 |     //     // await domainSettingsPage.navigateToDomain();
+   81 |     //     // // Test with different path that shouldn't be cached
+   82 |     //     // const nonCachedPath = '/non-cached-path';
+   83 |     //     // const response3 = await request.get(`https://${domain}${nonCachedPath}`);
+   84 |     //     // const xCacheStatus3 = response3.headers()['x-cache-status'];
+   85 |     //     // expect.soft(xCacheStatus3).not.toBe('HIT');
+   86 |     // });
+   87 |     // test('Clear Cache functionality', async ({ request }) => {
+   88 |     //     await domainSettingsPage.navigateToDomainList();
+   89 |     //     await domainSettingsPage.clearCache();
+   90 |     //    // await domainSettingsPage.navigateToDomain();
+   91 |     //     // First pass - initial requests
+   92 |     //     const initialResults = await Promise.all(
+   93 |     //         testPaths.map(async (path) => {
+   94 |     //             const response = await request.get(`https://${domain}${path}`);
+   95 |     //             return {
+   96 |     //                 path,
+   97 |     //                 status: response.status(),
+   98 |     //                 cacheStatus: response.headers()['x-cache-status']
+   99 |     //             };
+  100 |     //         })
+  101 |     //     );
+  102 |
+  103 |     //     console.log('Initial request results:');
+  104 |     //     initialResults.forEach(result => {
+  105 |     //         console.log(`${result.path}: ${result.cacheStatus}`);
+  106 |     //         if (result.path === '/test') {
+  107 |     //             expect.soft(['MISS','REFRESH']).toContain(result.cacheStatus);
+  108 |     //         }
+  109 |     //     });
+  110 |     // });
+  111 |
+  112 |   test('cache strategy turn off',async ({ request }) =>{
+  113 |     
+  114 |     await domainSettingsPage.navigateToDomainList();
+  115 |     await domainSettingsPage.configureCacheStrategyOFF();
+  116 |     const initialResults = await Promise.all(
+  117 |         testPaths.map(async (path) => {
+  118 |             const response = await request.get(`https://${domain}${path}`);
+  119 |             return {
+  120 |                 path,
+  121 |                 status: response.status(),
+  122 |                 cacheStatus: response.headers()['x-cache-status']
+  123 |             };
+  124 |         })
+  125 |     );
+  126 |     initialResults.forEach(result => {
+  127 |             // Assert that the response headers do NOT include 'x-cache-status'
+> 128 |             expect.soft(result.headers).not.toHaveProperty('x-cache-status');
+      |                                             ^ Error: expect(received).not.toHaveProperty(path)
+  129 |     });
+  130 |   }
+  131 |   );
+  132 |     test('Custom Cache Path configuration', async ({ request }) => {
+  133 |         await domainSettingsPage.navigateToDomainList();
+  134 |         await domainSettingsPage.configureCustomCachePath('/test'+ flooredNum);
+  135 |
+  136 |         await domainSettingsPage.navigateToDomain();
+  137 |         // Test all endpoints
+  138 |         // First pass - initial requests
+  139 |         const initialResults = await Promise.all(
+  140 |             testPaths.map(async (path) => {
+  141 |                 const response = await request.get(`https://${domain}${path}`);
+  142 |                 return {
+  143 |                     path,
+  144 |                     status: response.status(),
+  145 |                     cacheStatus: response.headers()['x-cache-status']
+  146 |                 };
+  147 |             })
+  148 |         );
+  149 |
+  150 |         console.log('Initial request results:');
+  151 |         initialResults.forEach(result => {
+  152 |             console.log(`${result.path}: ${result.cacheStatus}`);
+  153 |             if (result.path === '/test') {
+  154 |                 expect.soft(['H']).toContain(result.cacheStatus);
+  155 |             }
+  156 |         });
+  157 |
+  158 |         await domainSettingsPage.navigateToDomain();
+  159 |         // Second pass - repeat requests
+  160 |         const secondResults = await Promise.all(
+  161 |             testPaths.map(async (path) => {
+  162 |                 const response = await request.get(`https://${domain}${path}`);
+  163 |                 return {
+  164 |                     path,
+  165 |                     status: response.status(),
+  166 |                     cacheStatus: response.headers()['x-cache-status']
+  167 |                 };
+  168 |             })
+  169 |         );
+  170 |
+  171 |         console.log('\nSecond request results:');
+  172 |         secondResults.forEach(result => {
+  173 |             console.log(`${result.path}: ${result.cacheStatus}`);
+  174 |             if (result.path === '/test') {
+  175 |                 expect.soft(result.cacheStatus).toBe('HIT');
+  176 |             }
+  177 |             if (result.path === '/non-cached' || result.path === '/api/data') {
+  178 |                 expect.soft(['MISS', 'BYPASS']).toContain(result.cacheStatus);
+  179 |             }
+  180 |         });
+  181 |     });
+  182 |
+  183 |     test('HTTP Methods cache behavior', async ({ request }) => {
+  184 |         const methods = ['GET', 'POST', 'PUT', 'DELETE', 'HEAD'];
+  185 |         
+  186 |         for (const method of methods) {
+  187 |             const response = await request.fetch(`https://${domain}/test`, {
+  188 |                 method: method
+  189 |             });
+  190 |             console.log(`${method} request cache status: ${response.headers()['x-cache-status']}`);
+  191 |             
+  192 |             if (method === 'GET' || method === 'HEAD') {
+  193 |                 expect.soft(['HIT', 'MISS']).toContain(response.headers()['x-cache-status']);
+  194 |             } else {
+  195 |                 expect.soft(['BYPASS', 'MISS']).toContain(response.headers()['x-cache-status']);
+  196 |             }
+  197 |         }
+  198 |     });
+  199 |
+  200 |     test('Cache TTL behavior', async ({ request }) => {
+  201 |         const firstResponse = await request.get(`https://${domain}/test`);
+  202 |         expect.soft(firstResponse.headers()['x-cache-status']).toBe('MISS');
+  203 |         
+  204 |         const secondResponse = await request.get(`https://${domain}/test`);
+  205 |         expect.soft(secondResponse.headers()['x-cache-status']).toBe('HIT');
+  206 |         
+  207 |         await new Promise(resolve => setTimeout(resolve, 61000)); // 61 seconds
+  208 |         
+  209 |         const thirdResponse = await request.get(`https://${domain}/test`);
+  210 |         expect.soft(thirdResponse.headers()['x-cache-status']).toBe('MISS');
+  211 |     });
+  212 | });
+```

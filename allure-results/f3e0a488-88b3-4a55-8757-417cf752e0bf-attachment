@@ -1,0 +1,98 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Cache Strategy Tests >> Cache FullSite configuration
+- Location: C:\Users\naqas\OneDrive\ドキュメント\PlayWright\e2e\cacheStrategyTests.spec.js:58:9
+
+# Error details
+
+```
+Error: Timed out 5000ms waiting for expect(locator).toBeVisible()
+
+Locator: getByText('Domain saved successfully')
+Expected: visible
+Received: <element(s) not found>
+Call log:
+  - expect.toBeVisible with timeout 5000ms
+  - waiting for getByText('Domain saved successfully')
+
+    at DomainSettingsPage.configureCacheFullSite (C:\Users\naqas\OneDrive\ドキュメント\PlayWright\pages\domainSettings.page.js:43:72)
+    at C:\Users\naqas\OneDrive\ドキュメント\PlayWright\e2e\cacheStrategyTests.spec.js:61:9
+```
+
+# Test source
+
+```ts
+   1 | const { expect } = require('@playwright/test');
+   2 | export class DomainSettingsPage {
+   3 |     constructor(page) {
+   4 |         this.page = page;
+   5 |         this.editButton = page.locator('div:nth-child(2) > .btn').first();
+   6 |         this.bypassAllCookieCheckbox = page.getByRole('checkbox', { name: 'Bypass All Cookie' });
+   7 |         this.enableCacheFullSiteCheckbox = page.getByRole('checkbox', { name: 'Enable Cache FullSite' });
+   8 |         this.saveButton = page.getByRole('button', { name: 'icon: save Save' });
+   9 |         this.clearCacheButton = page.getByRole('button', { name: 'Clear cache' });
+  10 |         this.advancedConfigTab = page.getByRole('tab', { name: 'Advanced configuration' });
+  11 |         this.cacheStrategySection = page.getByText('Cache strategy');
+  12 |         this.addNewCachePathButton = page.getByText('Add new cache path');
+  13 |         this.pathInput = page.getByRole('textbox', { name: '/path, /test' });
+  14 |         this.addPathButton = page.getByRole('button', { name: 'icon: plus Add' });
+  15 |         this.cacheSwitch = page.getByRole('switch', { name: 'icon: close' });
+  16 |     }
+  17 |
+  18 |     async navigateToDomainList() {
+  19 |         await this.page.goto('https://console.asians.group/#/domain/list');
+  20 |     }
+  21 |
+  22 |     async configureBypassAllCookie(enable = true) {
+  23 |         await this.editButton.click();
+  24 |         if (enable) {
+  25 |             await this.bypassAllCookieCheckbox.check();
+  26 |         } else {
+  27 |             await this.bypassAllCookieCheckbox.uncheck();
+  28 |         }
+  29 |         await this.saveButton.click();
+  30 |         await this.page.waitForTimeout(11000);
+  31 |     }
+  32 |
+  33 |     async configureCacheFullSite(enable = true) {
+  34 |         await this.editButton.click();
+  35 |         if (enable) {
+  36 |             await this.enableCacheFullSiteCheckbox.check();
+  37 |         } else {
+  38 |             await this.enableCacheFullSiteCheckbox.uncheck();
+  39 |         }
+  40 |         await this.page.getByRole('checkbox', { name: 'Enable Cache FullSite' }).check();
+  41 |         await this.saveButton.click();
+  42 |         
+> 43 |         await expect(this.page.getByText('Domain saved successfully')).toBeVisible();
+     |                                                                        ^ Error: Timed out 5000ms waiting for expect(locator).toBeVisible()
+  44 |         await this.page.waitForTimeout(11000);
+  45 |     }
+  46 |
+  47 |     async clearCache() {
+  48 |         await this.editButton.click();
+  49 |         await this.clearCacheButton.click();
+  50 |         await expect(this.page.getByText('Clear cache action is running')).toBeVisible();
+  51 |         await this.saveButton.click();
+  52 |         await this.page.waitForTimeout(9000);
+  53 |     }
+  54 |
+  55 |     async configureCustomCachePath(path) {
+  56 |         await this.editButton.click();
+  57 |         await this.advancedConfigTab.click();
+  58 |         await this.cacheStrategySection.click();
+  59 |         await this.addNewCachePathButton.click();
+  60 |         await this.pathInput.fill(path);
+  61 |         await this.addPathButton.click();
+  62 |         await this.cacheSwitch.click();
+  63 |         await this.saveButton.click();
+  64 |         await this.page.waitForTimeout(15000);
+  65 |     }
+  66 | }
+```

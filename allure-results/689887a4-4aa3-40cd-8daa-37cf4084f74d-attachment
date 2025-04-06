@@ -1,0 +1,96 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Cache Strategy Tests >> Cache FullSite configuration
+- Location: C:\Users\naqas\OneDrive\ドキュメント\PlayWright\e2e\cacheStrategyTests.spec.js:57:9
+
+# Error details
+
+```
+Error: locator.click: Target page, context or browser has been closed
+Call log:
+  - waiting for getByRole('button', { name: 'icon: save Save' })
+    - locator resolved to <button type="button" class="ant-btn ant-btn-primary" ant-click-animating-without-extra-node="false">…</button>
+  - attempting click action
+    - waiting for element to be visible, enabled and stable
+    - element is visible, enabled and stable
+    - scrolling into view if needed
+    - done scrolling
+
+    at DomainSettingsPage.configureBypassAllCookie (C:\Users\naqas\OneDrive\ドキュメント\PlayWright\pages\domainSettings.page.js:28:31)
+    at C:\Users\naqas\OneDrive\ドキュメント\PlayWright\e2e\cacheStrategyTests.spec.js:59:9
+```
+
+# Test source
+
+```ts
+   1 | export class DomainSettingsPage {
+   2 |     constructor(page) {
+   3 |         this.page = page;
+   4 |         this.editButton = page.locator('div:nth-child(2) > .btn').first();
+   5 |         this.bypassAllCookieCheckbox = page.getByRole('checkbox', { name: 'Bypass All Cookie' });
+   6 |         this.enableCacheFullSiteCheckbox = page.getByRole('checkbox', { name: 'Enable Cache FullSite' });
+   7 |         this.saveButton = page.getByRole('button', { name: 'icon: save Save' });
+   8 |         this.clearCacheButton = page.getByRole('button', { name: 'Clear cache' });
+   9 |         this.advancedConfigTab = page.getByRole('tab', { name: 'Advanced configuration' });
+  10 |         this.cacheStrategySection = page.getByText('Cache strategy');
+  11 |         this.addNewCachePathButton = page.getByText('Add new cache path');
+  12 |         this.pathInput = page.getByRole('textbox', { name: '/path, /test' });
+  13 |         this.addPathButton = page.getByRole('button', { name: 'icon: plus Add' });
+  14 |         this.cacheSwitch = page.getByRole('switch', { name: 'icon: close' });
+  15 |     }
+  16 |
+  17 |     async navigateToDomainList() {
+  18 |         await this.page.goto('https://console.asians.group/#/domain/list');
+  19 |     }
+  20 |
+  21 |     async configureBypassAllCookie(enable = true) {
+  22 |         await this.editButton.click();
+  23 |         if (enable) {
+  24 |             await this.bypassAllCookieCheckbox.check();
+  25 |         } else {
+  26 |             await this.bypassAllCookieCheckbox.uncheck();
+  27 |         }
+> 28 |         await this.saveButton.click();
+     |                               ^ Error: locator.click: Target page, context or browser has been closed
+  29 |         await this.page.waitForTimeout(11000);
+  30 |     }
+  31 |
+  32 |     async configureCacheFullSite(enable = true) {
+  33 |         await this.editButton.click();
+  34 |         if (enable) {
+  35 |             await this.enableCacheFullSiteCheckbox.check();
+  36 |         } else {
+  37 |             await this.enableCacheFullSiteCheckbox.uncheck();
+  38 |         }
+  39 |         await page.getByRole('checkbox', { name: 'Enable Cache FullSite' }).check();
+  40 |         await this.saveButton.click();
+  41 |         await this.page.waitForTimeout(11000);
+  42 |     }
+  43 |
+  44 |     async clearCache() {
+  45 |         await this.editButton.click();
+  46 |         await this.clearCacheButton.click();
+  47 |         await expect(page.getByText('Clear cache action is running')).toBeVisible();
+  48 |         await this.saveButton.click();
+  49 |         await this.page.waitForTimeout(9000);
+  50 |     }
+  51 |
+  52 |     async configureCustomCachePath(path) {
+  53 |         await this.editButton.click();
+  54 |         await this.advancedConfigTab.click();
+  55 |         await this.cacheStrategySection.click();
+  56 |         await this.addNewCachePathButton.click();
+  57 |         await this.pathInput.fill(path);
+  58 |         await this.addPathButton.click();
+  59 |         await this.cacheSwitch.click();
+  60 |         await this.saveButton.click();
+  61 |         await this.page.waitForTimeout(15000);
+  62 |     }
+  63 | }
+```

@@ -1,0 +1,166 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Cache Strategy Validation Tests >> Enable Cache Strategy and verify saving works @positive @smoke
+- Location: C:\Users\naqas\OneDrive\ドキュメント\PlayWright\e2e\cacheStrategyValidation.spec.js:36:5
+
+# Error details
+
+```
+Error: browserType.launch: Executable doesn't exist at C:\Users\naqas\AppData\Local\ms-playwright\chromium-1161\chrome-win\chrome.exe
+╔═════════════════════════════════════════════════════════════════════════╗
+║ Looks like Playwright Test or Playwright was just installed or updated. ║
+║ Please run the following command to download new browsers:              ║
+║                                                                         ║
+║     npx playwright install                                              ║
+║                                                                         ║
+║ <3 Playwright Team                                                      ║
+╚═════════════════════════════════════════════════════════════════════════╝
+```
+
+# Test source
+
+```ts
+   1 | const { test, expect } = require('@playwright/test');
+   2 | const { ConsoleHomePage } = require('../../PlayWright/pages/ConsoleHomePage')
+   3 | const { UserLoginPage } = require('../../PlayWright/pages/UserLoginPage');
+   4 | const { DomainSettingsPage } = require('../../PlayWright/pages/DomainAdvancedConfigurationPage');
+   5 | const env = require('../../PlayWright/playwright.config');
+   6 | const testAssertions = require('../../PlayWright/dataFiles/cacheStrategyAssertions.json');
+   7 |
+   8 | let page;
+   9 | let loginPage;
+   10 | let homePage;
+   11 | let domainSettingsPage;
+   12 |
+   13 | test.describe('Cache Strategy Validation Tests', () => {
+   14 |     test.beforeAll(async ({ browser }) => {
+   15 |         page = await browser.newPage();
+   16 |         loginPage = new UserLoginPage(page);
+   17 |         homePage = new ConsoleHomePage(page);
+   18 |         domainSettingsPage = new DomainSettingsPage(page);
+   19 |     });
+   20 |
+   21 |     test.beforeEach(async () => {
+   22 |         await page.goto(env.use.Login.URL, { waitUntil: 'load' });
+   23 |         await loginPage.validLogin(env.use.Login.username, env.use.Login.password);
+   24 |         expect(await homePage.domainText.textContent()).toEqual("Domain");
+   25 |     });
+   26 |
+   27 |     test.afterEach(async () => {
+   28 |         await loginPage.logoutApplication();
+   29 |     });
+   30 |
+   31 |     test.afterAll(async () => {
+   32 |         await page.close();
+   33 |     });
+   34 |
+   35 |     // Positive Test Cases
+>  36 |     test('Enable Cache Strategy and verify saving works @positive @smoke', async () => {
+      |     ^ Error: browserType.launch: Executable doesn't exist at C:\Users\naqas\AppData\Local\ms-playwright\chromium-1161\chrome-win\chrome.exe
+   37 |         const domainName = 'test-1.cwcdn.com';
+   38 |         
+   39 |         await homePage.searchDomain(domainName);
+   40 |         await homePage.clickEditButton();
+   41 |         await homePage.waitForLocator(homePage.advancedConfigButton);
+   42 |         await homePage.clickOnVisibleLocator(homePage.advancedConfigButton);
+   43 |         
+   44 |         // Enable Cache Strategy
+   45 |         await domainSettingsPage.enableCacheStrategy();
+   46 |         await homePage.clickSaveButton();
+   47 |         
+   48 |         // Verify save was successful
+   49 |         await expect(homePage.notification).toContainText("Domain saved successfully");
+   50 |         await homePage.clickCloseNotification();
+   51 |         
+   52 |         // Reopen to verify persistence
+   53 |         await homePage.clickEditButton();
+   54 |         await homePage.clickOnVisibleLocator(homePage.advancedConfigButton);
+   55 |         await expect(domainSettingsPage.enableCacheStrategySwitch).toBeChecked();
+   56 |     });
+   57 |
+   58 |     test('Configure FullSite cache and verify behavior @positive', async () => {
+   59 |         const domainName = 'test-2.cwcdn.com';
+   60 |         
+   61 |         await homePage.searchDomain(domainName);
+   62 |         await homePage.clickEditButton();
+   63 |         await homePage.clickOnVisibleLocator(homePage.advancedConfigButton);
+   64 |         
+   65 |         // Enable Cache Strategy and FullSite cache
+   66 |         await domainSettingsPage.enableCacheStrategy();
+   67 |         await homePage.enableFullSiteCache();
+   68 |         
+   69 |         // Verify save was successful
+   70 |         await expect(homePage.notification).toContainText("Domain saved successfully");
+   71 |         await homePage.clickCloseNotification();
+   72 |         
+   73 |         // Verify cache behavior
+   74 |         const cacheStatus = await domainSettingsPage.checkXCacheStatus(domainName, 'page.html');
+   75 |         expect(cacheStatus).toBe('HIT');
+   76 |     });
+   77 |
+   78 |     test('Verify cache headers for different file types @positive', async () => {
+   79 |         const domainName = 'test-3.cwcdn.com';
+   80 |         const fileTypes = [
+   81 |             testAssertions.cacheStrategy.css,
+   82 |             testAssertions.cacheStrategy.js,
+   83 |             testAssertions.cacheStrategy.jpg,
+   84 |             testAssertions.cacheStrategy.html
+   85 |         ];
+   86 |         
+   87 |         await homePage.searchDomain(domainName);
+   88 |         await homePage.clickEditButton();
+   89 |         await homePage.clickOnVisibleLocator(homePage.advancedConfigButton);
+   90 |         
+   91 |         // Enable Cache Strategy
+   92 |         await domainSettingsPage.enableCacheStrategy();
+   93 |         await homePage.clickSaveButton();
+   94 |         
+   95 |         // Test each file type
+   96 |         for (const fileType of fileTypes) {
+   97 |             const cacheStatus = await domainSettingsPage.checkXCacheStatus(domainName, fileType);
+   98 |             expect(['HIT', 'MISS']).toContain(cacheStatus);
+   99 |         }
+  100 |     });
+  101 |
+  102 |     // Negative Test Cases
+  103 |     test('Attempt to enable cache with invalid TTL values @negative', async () => {
+  104 |         const domainName = 'test-1.cwcdn.com';
+  105 |         
+  106 |         await homePage.searchDomain(domainName);
+  107 |         await homePage.clickEditButton();
+  108 |         await homePage.clickOnVisibleLocator(homePage.advancedConfigButton);
+  109 |         
+  110 |         // Try to set invalid TTL
+  111 |         await domainSettingsPage.enableCacheStrategy();
+  112 |         await domainSettingsPage.page.locator('//input[@name="ttl"]').fill('-1');
+  113 |         await homePage.clickSaveButton();
+  114 |         
+  115 |         // Verify error message
+  116 |         await expect(homePage.notification).toContainText("Invalid TTL value");
+  117 |     });
+  118 |
+  119 |     test('Verify behavior when cache is disabled @negative', async () => {
+  120 |         const domainName = 'test-2.cwcdn.com';
+  121 |         
+  122 |         await homePage.searchDomain(domainName);
+  123 |         await homePage.clickEditButton();
+  124 |         await homePage.clickOnVisibleLocator(homePage.advancedConfigButton);
+  125 |         
+  126 |         // Disable Cache Strategy if enabled
+  127 |         if (await domainSettingsPage.enableCacheStrategySwitch.isChecked()) {
+  128 |             await domainSettingsPage.enableCacheStrategySwitch.click();
+  129 |         }
+  130 |         await homePage.clickSaveButton();
+  131 |         
+  132 |         // Verify cache is disabled
+  133 |         const cacheStatus = await domainSettingsPage.checkXCacheStatus(domainName, 'page.html');
+  134 |         expect(cacheStatus).toBeNull();
+  135 |     });
+  136 |
+```

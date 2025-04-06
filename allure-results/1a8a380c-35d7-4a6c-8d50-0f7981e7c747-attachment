@@ -1,0 +1,128 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: homepage has Playwright in title and get started link linking to the intro page
+- Location: C:\Users\naqas\OneDrive\ドキュメント\PlayWright\e2e\example.spec.js:4:1
+
+# Error details
+
+```
+Error: locator.fill: Target page, context or browser has been closed
+Call log:
+  - waiting for locator('input[placeholder=\'First Name\']')
+    - waiting for" https://user.asians.group/auth/realms/asians/login-actions/authenticate?session_code=mwBVwtkt8pHsfGhpaGGRYhT2LIlUmYauEQHo02xA7zU&execution=b33a37bd-4998-4a3f-ad2a-cb5be1d622e7&client_id=public&tab_id…" navigation to finish...
+    - navigated to "https://user.asians.group/auth/realms/asians/login-actions/authenticate?session_code=mwBVwtkt8pHsfGhpaGGRYhT2LIlUmYauEQHo02xA7zU&execution=b33a37bd-4998-4a3f-ad2a-cb5be1d622e7&client_id=public&tab_id…"
+    - waiting for" https://user.asians.group/auth/realms/asians/login-actions/authenticate?session_code=nP_19hiuE3NHB9yF4jQoTC5sywlP8Y2NewFPZ3YzeXU&execution=b33a37bd-4998-4a3f-ad2a-cb5be1d622e7&client_id=public&tab_id…" navigation to finish...
+    - navigated to "https://user.asians.group/auth/realms/asians/login-actions/authenticate?session_code=nP_19hiuE3NHB9yF4jQoTC5sywlP8Y2NewFPZ3YzeXU&execution=b33a37bd-4998-4a3f-ad2a-cb5be1d622e7&client_id=public&tab_id…"
+
+    at C:\Users\naqas\OneDrive\ドキュメント\PlayWright\e2e\example.spec.js:6:57
+```
+
+# Test source
+
+```ts
+   1 | // @ts-check
+   2 | const { test, expect } = require('@playwright/test');
+   3 |
+   4 | test('homepage has Playwright in title and get started link linking to the intro page', async ({ page }) => {
+   5 |   await page.goto('https://console.asians.group/');const { chromium } = require('playwright');
+>  6 |
+     | ^ Error: locator.fill: Target page, context or browser has been closed
+   7 |     await page.goto('https://user.asians.group/auth/realms/asians/protocol/openid-connect/auth?client_id=public&redirect_uri=https%3A%2F%2Fconsole.asians.group%2F%23%2F&state=625a8e65-456b-414a-8fa1-0db99c3dcbe3&response_mode=fragment&response_type=code&scope=openid&nonce=c0e2d0c0-4788-4f4f-8007-220821189d7a');
+   8 |     await page.getByRole('textbox', { name: 'Email' }).fill('qa.assessment@asians.cloud');
+   9 |     await page.getByRole('textbox', { name: 'Password' }).click();
+  10 |     await page.getByRole('textbox', { name: 'Password' }).fill('qaengineer123 ');
+  11 |     await page.getByRole('button', { name: 'Sign In' }).click();
+  12 |     await page.getByRole('textbox', { name: 'Password' }).click();
+  13 |     await page.getByRole('textbox', { name: 'Password' }).fill('qaengineer123 ');
+  14 |     await page.getByRole('textbox', { name: 'Password' }).click();
+  15 |     await page.getByRole('button', { name: 'Sign In' }).click();
+  16 |     await page.getByRole('textbox', { name: 'Password' }).click();
+  17 |     await page.getByRole('textbox', { name: 'Password' }).fill('qaengineer123');
+  18 |     await page.getByRole('button', { name: 'Sign In' }).click();
+  19 |     //     console.log('Waiting for 25 seconds')
+  20 |         await page.waitForTimeout(25000);
+  21 |     await page.goto('https://console.asians.group/#/domain/list');
+  22 |     await page.getByRole('button', { name: 'Edit' }).nth(1).click();
+  23 |     await page.getByRole('tab', { name: 'Advanced configuration' }).click();
+  24 |     await page.getByText('Cache strategy').click();
+  25 |     await page.getByText('Add new cache path').click();
+  26 |     await page.getByRole('textbox', { name: '/path, /test' }).click();
+  27 |     await page.getByRole('textbox', { name: '/path, /test' }).fill('test');
+  28 |     await page.getByRole('button', { name: 'icon: plus Add' }).click();
+  29 |     await page.getByRole('switch', { name: 'icon: close' }).click();
+  30 |     await page.getByRole('button', { name: 'icon: save Save' }).click();
+  31 |     await page.getByRole('heading', { name: 'test-3.cwcdn.com' }).click();
+  32 |     await page.getByRole('heading', { name: 'test-3.cwcdn.com' }).click({
+  33 |       button: 'right'
+  34 |     });
+  35 |     await page.getByText('Running').nth(1).click();
+  36 |     await page.getByRole('heading', { name: 'test-3.cwcdn.com' }).click({
+  37 |       modifiers: ['ControlOrMeta']
+  38 |     });
+  39 |     await page.getByRole('heading', { name: 'test-3.cwcdn.com' }).click();
+  40 |     await page.getByRole('heading', { name: 'test-2.cwcdn.com' }).click();
+  41 |     await page.getByRole('listitem').filter({ hasText: 'Last deployed in a few' }).getByRole('listitem').click();
+  42 |     await page.getByRole('heading', { name: 'test-3.cwcdn.com' }).click({
+  43 |       button: 'right'
+  44 |     });
+  45 |     await page.locator('div:nth-child(4) > .btn').first().click();
+  46 |     await page.getByRole('dialog', { name: 'Domain name configuration:' }).click();
+  47 |     await page.getByRole('button', { name: 'Cancel' }).click();
+  48 |     await page.locator('div:nth-child(2) > .btn').first().click();
+  49 |     await page.getByRole('button', { name: 'Cancel' }).click();
+  50 |     await page.getByRole('listitem').filter({ hasText: 'Last deployed a minute' }).getByRole('checkbox').check();
+  51 |     await page.getByRole('heading', { name: 'test-3.cwcdn.com' }).click();
+  52 |     await page.getByRole('listitem').filter({ hasText: 'Last deployed a minute' }).getByRole('checkbox').uncheck();
+  53 |     await page.getByRole('heading', { name: 'test-3.cwcdn.com' }).click();
+  54 |   
+  55 |  
+  56 |   // // create a locator
+  57 |   // const getStarted = page.locator('text=Get Started');
+  58 |
+  59 |   // // Expect an attribute "to be strictly equal" to the value.
+  60 |   // await expect(getStarted).toHaveAttribute('href', '/docs/intro');
+  61 |
+  62 |   // // Click the get started link.
+  63 |   // await getStarted.click();
+  64 |   
+  65 |   // // Expects the URL to contain intro.
+  66 |   // await expect(page).toHaveURL(/.*intro/);
+  67 | });
+  68 | test('Enter First Name',async ({ page })=>{
+  69 |   await page.locator("input[placeholder='First Name']").fill('QA')
+  70 | })
+  71 | test('Enter Last Name',async ({ page })=>{
+  72 |   await page.locator("input[placeholder='Last Name']").fill('Test')
+  73 | })
+  74 | test('Select Gender as Male',async ({ page })=>{
+  75 |     await page.locator('#inlineRadioMale').check()
+  76 | })
+  77 | test('Select Department as Departmenr of Engineering',async ({ page })=>{
+  78 |   await page.selectOption("select[name='department']",'Department of Engineering')
+  79 | })
+  80 | test('Enter Username',async ({ page })=>{
+  81 |   await page.locator("input[placeholder='Username']").fill('QaTest568')
+  82 | })
+  83 | test('Enter Password',async ({ page })=>{
+  84 |   await page.locator("input[placeholder='Password']").fill('Password1')
+  85 | })
+  86 | test('ReEnter in Confirm Password',async ({ page })=>{
+  87 |     await page.locator("input[placeholder='Confirm Password']").fill('Password1')
+  88 | })
+  89 | test('Enter Email',async ({ page })=>{
+  90 |     await page.locator("input[placeholder='E-Mail Address']").fill('TestQa@email.com')
+  91 | })
+  92 | test('Enter Phone Number',async ({ page })=>{
+  93 |     await page.locator("input[placeholder='(639)']").fill('‎13324558954')
+  94 | })
+  95 | test('Enter Additional Information',async ({ page })=>{
+  96 |     await page.locator("#exampleFormControlTextarea1").fill('Just for testing Purpose')
+  97 | })
+  98 |
+```

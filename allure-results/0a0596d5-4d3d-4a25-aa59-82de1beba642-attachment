@@ -1,0 +1,82 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Cache Strategy Validation >> Configure cache strategy and validate x-cache-status
+- Location: C:\Users\naqas\OneDrive\ドキュメント\PlayWright\e2e\example.spec.js:21:9
+
+# Error details
+
+```
+Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: "MISS"
+Received: "BYPASS"
+    at C:\Users\naqas\OneDrive\ドキュメント\PlayWright\e2e\example.spec.js:43:31
+```
+
+# Test source
+
+```ts
+   1 | import { test, expect } from '@playwright/test';
+   2 |
+   3 | test.describe('Cache Strategy Validation', () => {
+   4 |     let page;
+   5 |
+   6 |     test.beforeAll(async ({ browser }) => {
+   7 |         page = await browser.newPage();
+   8 |         
+   9 |         // Login sequence
+  10 |         await page.goto('https://user.asians.group/auth/realms/asians/protocol/openid-connect/auth?client_id=public&redirect_uri=https%3A%2F%2Fconsole.asians.group%2F%23%2F&state=625a8e65-456b-414a-8fa1-0db99c3dcbe3&response_mode=fragment&response_type=code&scope=openid&nonce=c0e2d0c0-4788-4f4f-8007-220821189d7a');
+  11 |         await page.getByRole('textbox', { name: 'Email' }).fill('qa.assessment@asians.cloud');
+  12 |         await page.getByRole('textbox', { name: 'Password' }).fill('qaengineer123');
+  13 |         await page.getByRole('button', { name: 'Sign In' }).click();
+  14 |         await page.waitForTimeout(25000);
+  15 |     });
+  16 |
+  17 |     test.afterAll(async () => {
+  18 |         await page.close();
+  19 |     });
+  20 |
+  21 |     test('Configure cache strategy and validate x-cache-status', async () => {
+  22 |         // Configure cache strategy
+  23 |         await page.goto('https://console.asians.group/#/domain/list');
+  24 |         await page.getByRole('button', { name: 'Edit' }).nth(1).click();
+  25 |         await page.getByRole('tab', { name: 'Advanced configuration' }).click();
+  26 |         await page.getByText('Cache strategy').click();
+  27 |         await page.getByText('Add new cache path').click();
+  28 |         await page.getByRole('textbox', { name: '/path, /test' }).fill('test');
+  29 |         await page.getByRole('button', { name: 'icon: plus Add' }).click();
+  30 |        // await page.getByRole('switch', { name: 'icon: close' }).click();
+  31 |         await page.getByRole('button', { name: 'icon: save Save' }).click();
+  32 |
+  33 |         // Wait for configuration to apply
+  34 |         await page.waitForTimeout(5000);
+  35 |
+  36 |         // Test domain
+  37 |         const domain = 'test-3.cwcdn.com';
+  38 |         const testPath = '/test';
+  39 |
+  40 |         // Make initial request and check for MISS
+  41 |         const response1 = await page.request.get(`https://${domain}${testPath}`);
+  42 |         const xCacheStatus1 = response1.headers()['x-cache-status'];
+> 43 |         expect(xCacheStatus1).toBe('MISS');
+     |                               ^ Error: expect(received).toBe(expected) // Object.is equality
+  44 |
+  45 |         // Make second request and check for HIT
+  46 |         const response2 = await page.request.get(`https://${domain}${testPath}`);
+  47 |         const xCacheStatus2 = response2.headers()['x-cache-status'];
+  48 |         expect(xCacheStatus2).toBe('HIT');
+  49 |
+  50 |         // Test with different path that shouldn't be cached
+  51 |         const nonCachedPath = '/non-cached-path';
+  52 |         const response3 = await page.request.get(`https://${domain}${nonCachedPath}`);
+  53 |         const xCacheStatus3 = response3.headers()['x-cache-status'];
+  54 |         expect(xCacheStatus3).not.toBe('HIT');
+  55 |     });
+  56 | });
+```

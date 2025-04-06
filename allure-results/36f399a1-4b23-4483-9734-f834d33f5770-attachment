@@ -1,0 +1,324 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Cache Strategy Tests >> Cache FullSite configuration
+- Location: C:\Users\naqas\OneDrive\ドキュメント\PlayWright\e2e\cacheStrategyTests.spec.js:66:9
+
+# Error details
+
+```
+Error: locator.check: Target page, context or browser has been closed
+Call log:
+  - waiting for getByRole('checkbox', { name: 'Enable Cache FullSite' })
+    - locator resolved to <input value="" type="checkbox" disabled="disabled" class="ant-checkbox-input"/>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is not stable
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is not enabled
+    - retrying click action
+      - waiting 100ms
+    111 × waiting for element to be visible, enabled and stable
+        - element is not enabled
+      - retrying click action
+        - waiting 500ms
+    - waiting for element to be visible, enabled and stable
+
+    at DomainSettingsPage.configureCacheFullSite (C:\Users\naqas\OneDrive\ドキュメント\PlayWright\pages\domainSettings.page.js:48:52)
+    at C:\Users\naqas\OneDrive\ドキュメント\PlayWright\e2e\cacheStrategyTests.spec.js:68:9
+```
+
+# Page snapshot
+
+```yaml
+- banner:
+  - link "Vue logo":
+    - img "Vue logo"
+  - list:
+    - listitem:
+      - link "Domain"
+    - listitem:
+      - link "DNS"
+    - listitem:
+      - link "Cert"
+    - listitem:
+      - button "Transaction"
+    - listitem:
+      - link "Tickets"
+    - listitem:
+      - link "Manage IP"
+    - listitem:
+      - link "Analytics / Traffic"
+    - listitem:
+      - link "API"
+    - listitem:
+      - link "Documentation"
+    - listitem:
+      - text: USDT 0.000000
+      - img
+      - button "Top Up"
+  - list:
+    - 'button "icon: flag"'
+  - list:
+    - listitem:
+      - link
+- main:
+  - img
+  - button "Join a member"
+  - text: Subscription
+  - img
+  - text: Free Membership level - Expire At
+  - img
+  - text: Domain 2 Active 3 Available
+  - img
+  - text: Traffic quota 29.30 MB Usage 10 GB Total
+  - img
+  - heading "29.28 MB" [level=2]
+  - text: Total traffic today 192.54 KB Outbound 29.09 MB Inbound
+  - img
+  - heading "41.7 %" [level=2]
+  - text: "Cache hit rate 846 Total Requests 353 Cache hits Exclusive CNAME:"
+  - strong: d13ccc91.fr5.net
+  - button "Configure subscription"
+  - alert:
+    - paragraph:
+      - strong: General Announcement：
+    - paragraph: WS is not fully supported in a free account. Inquire client support to upgrade your subscription.
+  - button:
+    - img
+  - textbox "Keyword search"
+  - 'button "icon: search"'
+  - button "Find Domain"
+  - button "Select all"
+  - 'button "icon: edit Batch edit" [disabled]': Batch edit
+  - 'button "icon: down" [disabled]'
+  - 'button "icon: plus-circle Add Domain"': Add Domain
+  - 'button "icon: down"'
+  - paragraph: "Total domains selected: 0"
+  - list:
+    - listitem:
+      - checkbox
+      - button:
+        - img
+      - button:
+        - img
+      - button:
+        - img
+      - button:
+        - img
+      - button "Last deployed a few seconds ago"
+      - button "Configure SSL"
+      - button "Diagnose"
+      - button "Apply rule"
+      - button "Edit"
+      - heading "test-3.cwcdn.com" [level=3]
+      - text: Running
+      - img
+      - text: Upstream
+      - list:
+        - listitem: 172.104.44.95:80
+    - listitem:
+      - checkbox
+      - button:
+        - img
+      - button:
+        - img
+      - button:
+        - img
+      - button:
+        - img
+      - button "Last deployed 19 hours ago"
+      - button "Configure SSL"
+      - button "Diagnose"
+      - button "Apply rule"
+      - button "Edit"
+      - heading "test-2.cwcdn.com" [level=3]
+      - text: Running
+      - img
+      - text: Upstream
+      - list:
+        - listitem: 172.104.44.95:80
+  - list:
+    - listitem "Previous Page"
+    - listitem "1"
+    - listitem "Next Page"
+- contentinfo:
+  - text: © 2025.
+  - combobox:
+    - option "en-US" [selected]
+    - option "zh-CN"
+- 'dialog "Domain name configuration: test-3.cwcdn.com"':
+  - document:
+    - text: "Domain name configuration: test-3.cwcdn.com"
+    - tablist:
+      - tab "Basic configuration"
+      - tab "Shadow domain"
+      - tab "Advanced configuration" [selected]
+      - tab "Security setting"
+      - tab "Metadata"
+    - tabpanel:
+      - tablist:
+        - tab "Custom Request Header"
+        - tab "Custom Response Header"
+        - 'tab "icon: check-circle Cache strategy" [selected]': Cache strategy
+        - tab "Proxy host"
+        - tab "Origin path prefix"
+        - tab "ACME Configuration"
+        - tab "Advanced rules"
+      - tabpanel:
+        - banner:
+          - 'switch "icon: check" [checked]'
+          - strong: Cache strategy
+          - paragraph: Intelligent caching and transparent transmission rules.
+          - button "Clear cache":
+            - img
+            - text: Clear cache
+        - list:
+          - listitem:
+            - text: /static
+            - button "Close": ×
+          - listitem:
+            - text: /uploads
+            - button "Close": ×
+          - listitem:
+            - text: /test168
+            - button "Close": ×
+          - listitem:
+            - text: /test500
+            - button "Close": ×
+        - alert: Enabling Cache Reusable will use a common cache key, improving efficiency by reducing redundant cache entries for each prefix domain. Disabling it will revert to the original cache policy
+        - 'switch "icon: check" [checked]'
+        - strong: Cache Reusable
+        - paragraph:
+          - strong: Add new cache path
+        - group:
+          - textbox "/path, /test"
+          - text: Enter cache path... (separate by line for multiple cache paths)
+        - 'button "icon: plus Add" [disabled]': Add
+        - text: Request
+        - alert: Bypass All Cookie disables all caching behaviors and overrides other cache configurations.
+        - checkbox "Bypass All Cookie" [checked]
+        - text: Bypass All Cookie
+        - paragraph: Cookie bypass rules
+        - text: New
+        - paragraph: Path bypass rules
+        - text: New
+        - paragraph: Query bypass rules
+        - text: New
+        - paragraph: Request method
+        - text: GET HEAD OPTIONS New Response
+        - paragraph: Response code
+        - text: 200 301 302 New
+        - paragraph: Content type
+        - paragraph:
+          - img
+          - text: Predefined Extension Types
+        - text: m3u8 ts mp3 mp4 bmp css cur js jpg jpeg gif htc ico png swf otf ttf eot webp woff woff2 svg jar apk ipa zip rar tif flv mov wmv wav cff afm lwfn ffil fon pfm pfb std pro xsf pdf doc docx ppt pptx xls xlsx epub odt odp ods txt rtf New
+        - alert: Disable Bypass All Cookie to enable Full Site Cache
+        - checkbox "Enable Cache FullSite" [disabled]
+        - text: Enable Cache FullSite
+    - contentinfo:
+      - 'button "icon: delete Delete"': Delete
+      - 'button "icon: pause Pause"': Pause
+      - button "Cancel"
+      - 'button "icon: save Save"': Save
+```
+
+# Test source
+
+```ts
+   1 | const { expect } = require('@playwright/test');
+   2 | export class DomainSettingsPage {
+   3 |     constructor(page) {
+   4 |         this.page = page;
+   5 |         this.editButton = page.locator('div:nth-child(2) > .btn').first();
+   6 |         this.bypassAllCookieCheckbox = page.getByRole('checkbox', { name: 'Bypass All Cookie' });
+   7 |         this.enableCacheFullSiteCheckbox = page.getByRole('checkbox', { name: 'Enable Cache FullSite' });
+   8 |         this.saveButton = page.getByRole('button', { name: 'icon: save Save' });
+   9 |         this.clearCacheButton = page.getByRole('button', { name: 'Clear cache' });
+  10 |         this.advancedConfigTab = page.getByRole('tab', { name: 'Advanced configuration' });
+  11 |         this.cacheStrategySection = page.getByText('Cache strategy');
+  12 |         this.addNewCachePathButton = page.getByText('Add new cache path');
+  13 |         this.pathInput = page.getByRole('textbox', { name: '/path, /test' });
+  14 |         this.addPathButton = page.getByRole('button', { name: 'icon: plus Add' });
+  15 |         this.cacheSwitch = page.getByRole('switch', { name: 'icon: close' });
+  16 |         this.cacheStrategyToggle = page.locator("div[class='d-flex align-items-center flex-fill'] span[class='ant-switch-inner']");
+  17 |         this.toggleoff = page.getByRole('switch', { name: 'icon: close' });
+  18 |         this.toggleOn = page.getByLabel('Domain name configuration:').getByRole('banner').getByRole('switch', { name: 'icon: check' });
+  19 |     }
+  20 |
+  21 |     async navigateToDomainList() {
+  22 |         await this.page.goto('https://console.asians.group/#/domain/list');
+  23 |     }
+  24 |     async navigateToDomain() {
+  25 |         await this.page.goto('https://test-3.cwcdn.com/test')
+  26 |     }
+  27 |     async configureBypassAllCookie(enable = true) {
+  28 |         await this.editButton.click();
+  29 |         if (enable) {
+  30 |             await this.bypassAllCookieCheckbox.check();
+  31 |         } else {
+  32 |             await this.bypassAllCookieCheckbox.uncheck();
+  33 |         }
+  34 |         await this.saveButton.click();
+  35 |         await this.page.waitForTimeout(6000);
+  36 |     }
+  37 |     async cachestrategyToggleCheck(){
+  38 |         await this.editButton.click();
+  39 |     if (await this.toggleoff.isVisible()) {
+  40 |       await this.toggleoff.click();
+  41 |     }
+  42 |         await this.saveButton.click();
+  43 |     }
+  44 |
+  45 |     async configureCacheFullSite(enable = true) {
+  46 |         await this.editButton.click();
+  47 |         if (enable) {
+> 48 |             await this.enableCacheFullSiteCheckbox.check();
+     |                                                    ^ Error: locator.check: Target page, context or browser has been closed
+  49 |         } else {
+  50 |             await this.enableCacheFullSiteCheckbox.uncheck();
+  51 |         }
+  52 |         await this.page.getByRole('checkbox', { name: 'Enable Cache FullSite' }).check();
+  53 |         await this.saveButton.click();
+  54 |
+  55 |         //await expect(this.page.getByText('Domain saved successfully')).toBeVisible();
+  56 |         await this.page.waitForTimeout(6000);
+  57 |     }
+  58 |
+  59 |     async clearCache() {
+  60 |         await this.editButton.click();
+  61 |
+  62 |         await this.clearCacheButton.click();
+  63 |       //  await expect(this.page.getByText('Clear cache action is running')).toBeVisible();
+  64 |         await this.saveButton.click();
+  65 |         await this.page.waitForTimeout(6000);
+  66 |     }
+  67 |
+  68 |     async configureCustomCachePath(path) {
+  69 |         await this.editButton.click();
+  70 |         await this.advancedConfigTab.click();
+  71 |        await this.addNewCachePathButton.click();
+  72 |         await this.pathInput.fill(path);
+  73 |        await this.addPathButton.click();
+  74 |   
+  75 |         await this.saveButton.click();
+  76 |         await this.page.waitForTimeout(6000);
+  77 |     }
+  78 |     async configureCacheStrategyOFF() {
+  79 |         await this.editButton.click();
+  80 |         await this.advancedConfigTab.click();
+  81 |        await this.toggleOn.click();
+  82 |   
+  83 |         await this.saveButton.click();
+  84 |         await this.page.waitForTimeout(6000);
+  85 |     }
+  86 | }
+```

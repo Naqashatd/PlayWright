@@ -1,0 +1,7 @@
+Initial request results:
+/test: BYPASS
+/non-cached: BYPASS
+/image.jpg: REFRESH
+/script.js: REFRESH
+/style.css: REFRESH
+/api/data: BYPASS

@@ -1,0 +1,5 @@
+GET request cache status: undefined
+POST request cache status: undefined
+PUT request cache status: undefined
+DELETE request cache status: undefined
+HEAD request cache status: undefined

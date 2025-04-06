@@ -1,0 +1,83 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: Cache Strategy Validation >> Configure cache strategy and validate x-cache-status
+- Location: C:\Users\naqas\OneDrive\ドキュメント\PlayWright\e2e\Flows\byPass.spec.js:21:9
+
+# Error details
+
+```
+Error: Timed out 5000ms waiting for expect(locator).toBeVisible()
+
+Locator: getByText('Save SuccessDomain saved')
+Expected: visible
+Received: <element(s) not found>
+Call log:
+  - expect.toBeVisible with timeout 5000ms
+  - waiting for getByText('Save SuccessDomain saved')
+
+    at C:\Users\naqas\OneDrive\ドキュメント\PlayWright\e2e\Flows\byPass.spec.js:27:66
+```
+
+# Test source
+
+```ts
+   1 | import { test, expect } from '@playwright/test';
+   2 |
+   3 | test.describe('Cache Strategy Validation', () => {
+   4 |     let page;
+   5 |
+   6 |     test.beforeAll(async ({ browser }) => {
+   7 |         page = await browser.newPage();
+   8 |         
+   9 |         // Login sequence
+  10 |         await page.goto('https://user.asians.group/auth/realms/asians/protocol/openid-connect/auth?client_id=public&redirect_uri=https%3A%2F%2Fconsole.asians.group%2F%23%2F&state=625a8e65-456b-414a-8fa1-0db99c3dcbe3&response_mode=fragment&response_type=code&scope=openid&nonce=c0e2d0c0-4788-4f4f-8007-220821189d7a');
+  11 |         await page.getByRole('textbox', { name: 'Email' }).fill('qa.assessment@asians.cloud');
+  12 |         await page.getByRole('textbox', { name: 'Password' }).fill('qaengineer123');
+  13 |         await page.getByRole('button', { name: 'Sign In' }).click();
+  14 |         await page.waitForTimeout(60000);
+  15 |     });
+  16 |
+  17 |     test.afterAll(async () => {
+  18 |         await page.close();
+  19 |     });
+  20 |
+  21 |     test('Configure cache strategy and validate x-cache-status', async () => {
+  22 |         // Configure cache strategy
+  23 |         await page.goto('https://console.asians.group/#/domain/list');
+  24 |         await page.locator('div:nth-child(2) > .btn').first().click();
+  25 |         await page.getByRole('checkbox', { name: 'Bypass All Cookie' }).check();
+  26 |         await page.getByRole('button', { name: 'icon: save Save' }).click();
+> 27 |         await expect(page.getByText('Save SuccessDomain saved')).toBeVisible();
+     |                                                                  ^ Error: Timed out 5000ms waiting for expect(locator).toBeVisible()
+  28 |         // Wait for configuration to apply
+  29 |         await page.waitForTimeout(5000);
+  30 |
+  31 |         // Test domain
+  32 |         const domain = 'test-3.cwcdn.com';
+  33 |         const testPath = '/test';
+  34 |
+  35 |         // Make initial request and check for MISS
+  36 |         const response1 = await page.request.get(`https://${domain}${testPath}`);
+  37 |         const xCacheStatus1 = response1.headers()['x-cache-status'];
+  38 |         expect(['MISS',"REFRESH"]).toContain(xCacheStatus1);
+  39 |         //expect(xCacheStatus1).toBe('MISS');
+  40 |
+  41 |         // Make second request and check for that path shoudn't be cached Bypass
+  42 |         const response2 = await page.request.get(`https://${domain}${testPath}`);
+  43 |         const xCacheStatus2 = response2.headers()['x-cache-status'];
+  44 |         expect(xCacheStatus2).toBe('ByPass');
+  45 |
+  46 |         // Test with different path that should be cached
+  47 |         // const cachedPath = '/non-cached-path';
+  48 |         // const response3 = await page.request.get(`https://${domain}${cachedPath}`);
+  49 |         // const xCacheStatus3 = response3.headers()['x-cache-status'];
+  50 |         // expect(xCacheStatus3).toBe('HIT');
+  51 |     });
+  52 | });
+```

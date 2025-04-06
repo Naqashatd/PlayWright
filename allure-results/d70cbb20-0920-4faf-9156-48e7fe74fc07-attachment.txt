@@ -1,0 +1,5 @@
+GET request cache status: HIT
+POST request cache status: BYPASS
+PUT request cache status: BYPASS
+DELETE request cache status: BYPASS
+HEAD request cache status: MISS
