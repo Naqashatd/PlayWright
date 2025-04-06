@@ -32,6 +32,7 @@ test.describe('Cache Strategy Tests', () => {
 
 test('HTTP Methods cache behavior', async ({ request }) => {
     await domainSettingsPage.navigateToDomainList();
+    await domainSettingsPage.searchDomain(domain);
     await domainSettingsPage.cachestrategyToggleCheck();
     await page.waitForTimeout(65000);
     await domainSettingsPage.navigateToDomain() ;

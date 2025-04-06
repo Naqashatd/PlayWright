@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig, devices } from '@playwright/test'
+import path from 'path';
 
 /**
  * Read environment variables from file.
@@ -40,7 +41,14 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     // baseURL: 'http://127.0.0.1:3000',
-    video: 'on',
+    use: {
+      browserName: 'chromium',
+      video: 'on', // or 'retain-on-failure' or 'off'
+      recordVideo: {
+        dir: 'test-results',  // required
+        size: { width: 1280, height: 720 },  // optional
+      },
+    },
     /* Collect trace when retrying the failed test. */
     trace: 'on-first-retry',
   },
