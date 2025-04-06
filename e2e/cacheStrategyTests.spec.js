@@ -39,13 +39,13 @@ test.describe('Cache Strategy Tests', () => {
         await domainSettingsPage.navigateToDomain();
         // Test domain
         const testPath = '/test';
-
+        await domainSettingsPage.navigateToDomain();
         // Make initial request and check for MISS
         const response1 = await request.get(`https://${domain}${testPath}`);
         const xCacheStatus1 = response1.headers()['x-cache-status'];
        // in actual it should have first one
        // expect(xCacheStatus1).toBe('MISS');
-       expect(['BYPASS']).toContain(xCacheStatus1);
+       expect(xCacheStatus1).toContain(['BYPASS']);
 
        await domainSettingsPage.navigateToDomain();
         // Make second request and check for ByPass
