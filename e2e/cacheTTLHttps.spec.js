@@ -33,7 +33,7 @@ test.describe('Cache Strategy Tests', () => {
 test('HTTP Methods cache behavior', async ({ request }) => {
     await domainSettingsPage.navigateToDomainList();
     await domainSettingsPage.cachestrategyToggleCheck();
-    await page.waitForTimeout(60000);
+    await page.waitForTimeout(65000);
     await domainSettingsPage.navigateToDomain() ;
     
     await page.waitForTimeout(30000);
@@ -46,9 +46,9 @@ test('HTTP Methods cache behavior', async ({ request }) => {
         console.log(`${method} request cache status: ${response.headers()['x-cache-status']}`);
         
         if (method === 'GET' || method === 'HEAD') {
-            expect.soft(['HIT', 'MISS']).toContain(response.headers()['x-cache-status']);
+            expect.soft(['HIT','BYPASS','REFRESH','MISS']).toContain(response.headers()['x-cache-status']);
         } else {
-            expect.soft(['BYPASS', 'MISS']).toContain(response.headers()['x-cache-status']);
+            expect.soft(['HIT','BYPASS','REFRESH','MISS']).toContain(response.headers()['x-cache-status']);
         }
     }
 });

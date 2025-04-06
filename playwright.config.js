@@ -15,7 +15,7 @@ import { defineConfig, devices } from '@playwright/test'
 export default defineConfig({
     // Set workers to 1
     workers: 1,
-    timeout: 65000,
+    timeout: 195000,
   
   testDir: './e2e',
   /* Run tests in files in parallel */
@@ -40,7 +40,7 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     // baseURL: 'http://127.0.0.1:3000',
-
+    video: 'on',
     /* Collect trace when retrying the failed test. */
     trace: 'on-first-retry',
   },
