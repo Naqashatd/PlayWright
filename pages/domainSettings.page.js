@@ -21,28 +21,29 @@ export class DomainSettingsPage {
     }
 
     async navigateToDomainList() {
-        await this.page.goto('https://console.asians.group/#/domain/list', { waitUntil: 'load' });
+        await this.page.goto('https://console.asians.group/#/domain/list');
+        await this.page.evaluate(() => {
+            location.reload(true); 
+          });
+          
+          
     }
     async navigateToDomain() {
-        await this.page.goto('https://test-2.cwcdn.com/', { waitUntil: 'load' })
+        await this.page.goto('https://test-3.cwcdn.com/test')
+        await this.page.evaluate(() => {
+            location.reload(true); 
+          });
     }
-
-    async navigateToDomainPath() {
-        await this.page.goto('https://test-2.cwcdn.com/static', { waitUntil: 'load' })
-    }
-    async configureBypassAllCookieCheck(enable = true) {
+    async configureBypassAllCookie(enable = true) {
         await this.editButton.click();
-        await this.bypassAllCookieCheckbox.check();
+        if (enable) {
+            await this.bypassAllCookieCheckbox.check();
+        } else {
+            await this.bypassAllCookieCheckbox.uncheck();
+        }
         await this.saveButton.click();
-        await this.page.waitForTimeout(6000);
+        await this.page.waitForTimeout(20000);
     }
-    async configureBypassAllCookieUncheck(enable = true) {
-        await this.editButton.click();
-        await this.bypassAllCookieCheckbox.uncheck();
-        await this.saveButton.click();
-        await this.page.waitForTimeout(6000);
-    }
-
     async cachestrategyToggleCheck(){
         await this.editButton.click();
     if (await this.toggleoff.isVisible()) {
@@ -51,33 +52,25 @@ export class DomainSettingsPage {
         await this.saveButton.click();
     }
 
-    async configureCacheFullSiteCheck(enable = true) {
+    async configureCacheFullSite(enable = true) {
         await this.editButton.click();
         if (await this.bypassAllCookieCheckbox.isChecked()) {
-                        await this.bypassAllCookieCheckbox.uncheck();
-                    }
+            await this.bypassAllCookieCheckbox.uncheck();
+        }
         await this.page.getByRole('checkbox', { name: 'Enable Cache FullSite' }).check();
         await this.saveButton.click();
 
         //await expect(this.page.getByText('Domain saved successfully')).toBeVisible();
-        await this.page.waitForTimeout(6000);
+        await this.page.waitForTimeout(20000);
     }
 
-    async configureCacheFullSiteUncheck(enable = true) {
-        await this.editButton.click();
-        await this.enableCacheFullSiteCheckbox.uncheck();
-        await this.saveButton.click();
-
-        //await expect(this.page.getByText('Domain saved successfully')).toBeVisible();
-        await this.page.waitForTimeout(6000);
-    }
     async clearCache() {
         await this.editButton.click();
 
         await this.clearCacheButton.click();
       //  await expect(this.page.getByText('Clear cache action is running')).toBeVisible();
         await this.saveButton.click();
-        await this.page.waitForTimeout(6000);
+        await this.page.waitForTimeout(20000);
     }
 
     async configureCustomCachePath(path) {
@@ -88,7 +81,7 @@ export class DomainSettingsPage {
        await this.addPathButton.click();
   
         await this.saveButton.click();
-        await this.page.waitForTimeout(6000);
+        await this.page.waitForTimeout(20000);
     }
     async configureCacheStrategyOFF() {
         await this.editButton.click();
@@ -96,13 +89,12 @@ export class DomainSettingsPage {
        await this.toggleOn.click();
   
         await this.saveButton.click();
-        await this.page.waitForTimeout(6000);
+        await this.page.waitForTimeout(20000);
     }
-
     async searchDomain(domain){
         await this.searchField.fill(domain);
         await this.searchField.press('Enter');
-        for (let i = 0; i < 3; i++){
+        for (let i = 0; i < 1; i++){
             await this.searchIconButton.waitFor({state:"attached", timeout:10000})
             await this.page.waitForTimeout(1000)
             await this.searchIconButton.click();
